@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-""" dabeazley python: build your own async - timestamp 13:13"""
+""" dabeazley python: build your own async - timestamp 17:45 """
 import time
 from collections import deque
 
@@ -37,14 +37,20 @@ def countdown(n):
         sched.work_queue_add(lambda: countdown(n - 1))
 
 
-def countup(stop, x=0):
+# git rid of default argument "x=0"
+# nest top level function (i.e., countup()) code logic in an internal function
+# then the top level function calls the internfal function and passes the old
+# x value of 0
+def countup(stop):
     """
     doc string
     """
-    if x < stop:
-        print("Up", x)
-        time.sleep(1)
-        sched.work_queue_add(lambda: countup(stop, x + 1))
+    def _internal_func(x):
+        if x < stop:
+            print("Up", x)
+            time.sleep(1)
+            sched.work_queue_add(lambda: _internal_func(x + 1))
+    _internal_func(0)
 
 
 sched.work_queue_add(lambda: countdown(5))
